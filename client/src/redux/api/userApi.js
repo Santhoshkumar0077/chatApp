@@ -4,7 +4,7 @@ import Cookies from "js-cookie";
 export const userApi = createApi({
   reducerPath: "userApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "https://chatapp-jc9c.onrender.com/",
+    baseUrl: "https://chatapp-bf0r.onrender.com/",
   }),
   endpoints: (builder) => ({
     signupUser: builder.mutation({
