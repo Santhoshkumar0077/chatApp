@@ -1,60 +1,90 @@
-import { useState } from "react";
-import axios from "axios";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useLoginUserMutation } from "../redux/api/userApi";
+import toast, { Toaster } from "react-hot-toast";
 import Cookies from "js-cookie";
-import { useNavigate } from "react-router-dom";
+import { setLoggedUserName } from "../redux/slices/userSlice";
+import { useDispatch, useSelector } from "react-redux";
 
-const Login = ({ setAuthState }) => {
+const Login = ({ setlogin }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const navigate = useNavigate();
-
+  const Navigate = useNavigate();
+  const dispatch = useDispatch(); 
+  const [loginuser, { data, isError, isLoading }] = useLoginUserMutation();
   const handleLogin = async (e) => {
     e.preventDefault();
-    try {
-      const res = await axios.post("http://localhost:5000/api/auth/login", {
-        username,
-        password,
-      });
-      Cookies.set("token", res.data.token, { expires: 7 }); 
-      Cookies.set("loggedusername", res.data.username, { expires: 7 }); 
-      navigate("/"); 
-    } catch (error) {
-      alert(error.response?.data?.message || "Login failed!");
+    if (!username || !password) {
+      toast.error("All fields required");
+      return;
     }
+    try {
+      const res = await loginuser({ username, password }).unwrap();
+      setUsername("");
+      setPassword("");
+      toast.success("Login succesful!");
+      Cookies.set("token", res.token);
+      dispatch(setLoggedUserName(res.username));
+      setTimeout(() => {
+        Navigate("/");
+      }, 500);
+    } catch (error) {}
   };
-
   return (
-    <div>
-      <h2 className="text-center">Login</h2>
-      <form onSubmit={handleLogin}>
-        <div className="mb-3">
-          <label className="form-label">Username</label>
+    <div
+      className="container-fluid d-flex justify-content-center align-items-center vh-100"
+      style={{ background: "linear-gradient(to right, #667eea, #764ba2)" }}
+    >
+      <form
+        className="col-12 col-md-6 col-lg-4 p-4 border rounded shadow bg-white"
+        onSubmit={handleLogin}
+      >
+        <h1 className="text-center text-primary">Login</h1>
+        <div className="mt-3">
+          <label htmlFor="" className="form-label">
+            Username
+          </label>
           <input
             type="text"
             className="form-control"
-            value={username}
             onChange={(e) => setUsername(e.target.value)}
-            required
+            value={username}
           />
         </div>
-        <div className="mb-3">
-          <label className="form-label">Password</label>
+        <div className="mt-3">
+          <label htmlFor="" className="form-label">
+            Password
+          </label>
           <input
             type="password"
             className="form-control"
-            value={password}
             onChange={(e) => setPassword(e.target.value)}
-            required
+            value={password}
           />
         </div>
-        <button type="submit" className="btn btn-primary w-100">Login</button>
-      </form>
-      <p className="text-center mt-3">
-        Don't have an account? 
-        <button className="btn btn-link" onClick={() => setAuthState("signup")}>
-          Signup
+        <div className="mt-3 text-center">
+          <Link
+            className="text-decoration-none"
+            onClick={() => setlogin(false)}
+          >
+            Don't have an account?
+          </Link>
+        </div>
+        <button type="submit" className="btn btn-primary w-100 mt-3">
+          {isLoading ? "Logging in..." : "Login"}
         </button>
-      </p>
+        {isError && (
+          <div className="mt-3 text-danger">Login failed. Try again</div>
+        )}
+        {data && <div className="mt-3 text-success">{data.message}</div>}
+      </form>
+
+      <Toaster
+        position="top-right"
+        reverseOrder={false}
+        pauseOnHover
+        closeOnClick
+      />
     </div>
   );
 };

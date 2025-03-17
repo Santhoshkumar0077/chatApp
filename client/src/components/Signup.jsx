@@ -1,57 +1,99 @@
-import { useState } from "react";
-import axios from "axios";
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import { useSignupUserMutation } from "../redux/api/userApi";
+import toast, { Toaster } from "react-hot-toast";
 
-const Signup = ({ setAuthState }) => {
+const Signup = ({ setlogin }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [signup, {data,isError,isLoading}] = useSignupUserMutation();
 
-  const handleSignup = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    const containSpecialCharacter = (password) => {
+      const specialChars = /[!@#$%^&*(),.:{}|<>]/;
+      return specialChars.test(password);
+    };
+    if (username.length <= 4) {
+      setError("Enter at least 5 characters for username");
+      toast.error("Enter at least 5 characters for username");
+      return;
+    }
+    if (password.length <= 7) {
+      setError("Enter at least 8 characters for password");
+      toast.error("Enter at least 8 characters for password");
+      return;
+    }
+    if (!containSpecialCharacter(password)) {
+      setError("Enter at least one special character");
+      toast.error("Enter at least one special character");
+      return;
+    }
     try {
-      await axios.post("http://localhost:5000/api/auth/signup", {
-        username,
-        password,
-      });
-
-      alert("Signup successful. Please login!");
-      setAuthState("login");
-    } catch (error) {
-      alert(error.response?.data?.message || "Signup failed!");
+      await signup({ username, password }).unwrap();
+      setUsername("");
+      setPassword("");
+      setError("");
+      toast.success("User registered successfully!");
+      setTimeout(() => {
+        setlogin(true)
+      }, 2000);
+    } catch (err) {
+      toast.error("Signup Failed");
     }
   };
 
   return (
-    <div>
-      <h2 className="text-center">Signup</h2>
-      <form onSubmit={handleSignup}>
-        <div className="mb-3">
+    <div
+      className="container-fluid d-flex justify-content-center align-items-center vh-100"
+      style={{ background: "linear-gradient(to right, #ff7eb3, #ff758c)" }}
+    >
+      <form
+        className="col-12 col-md-6 col-lg-4 p-4 border rounded shadow bg-white"
+        onSubmit={handleSubmit}
+      >
+        <h1 className="text-center text-danger">Signup</h1>
+        <div className="mt-3">
           <label className="form-label">Username</label>
           <input
             type="text"
             className="form-control"
-            value={username}
             onChange={(e) => setUsername(e.target.value)}
-            required
+            value={username}
           />
         </div>
-        <div className="mb-3">
+        <div className="mt-3">
           <label className="form-label">Password</label>
           <input
             type="password"
             className="form-control"
-            value={password}
             onChange={(e) => setPassword(e.target.value)}
-            required
+            value={password}
           />
         </div>
-        <button type="submit" className="btn btn-success w-100">Signup</button>
-      </form>
-      <p className="text-center mt-3">
-        Already have an account? 
-        <button className="btn btn-link" onClick={() => setAuthState("login")}>
-          Login
+        <div className="mt-3 text-center">
+          <Link className="text-decoration-none" onClick={() => setlogin(true)}>
+            Already have an account? Login
+          </Link>
+        </div>
+        {error && <div className="mt-3 text-danger">{error}</div>}
+        <button
+          type="submit"
+          className="btn btn-danger w-100 mt-3"
+          disabled={isLoading}
+        >
+          {isLoading ? "Registering..." : "Register"}
         </button>
-      </p>
+        {data && <div className="mt-3 text-success">{data.message}</div>}
+        {isError && <div className="mt-3 text-danger">Signup failed</div>}
+      </form>   
+      <Toaster
+        position="top-right"
+        reverseOrder={false}
+        pauseOnHover 
+        closeOnClick
+      />
     </div>
   );
 };

@@ -1,63 +1,50 @@
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
-import Cookies from "js-cookie";
+import React, { useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar";
 import Conversation from "../components/Conversation";
-import NotificationManager from "../components/NotificationManager";
+import { useSelector } from "react-redux";
 
 const Home = () => {
-  const navigate = useNavigate();
-  const token = Cookies.get("token");
-  const { id } = useSelector((state) => state.conversation);
-  
-  const getScreenSize = () => window.innerWidth <= 600;
-  const [isSmallScreen, setIsSmallScreen] = useState(getScreenSize());
+  const selectedUserName = useSelector((state) => state.users.selectedUserName);
+  const [mobileView, setMobileView] = useState(window.innerWidth < 600);
 
   useEffect(() => {
-    if (!token) {
-      navigate("/auth");
-    }
-  }, [navigate, token]);
-
-  useEffect(() => {
-    const checkScreenSize = () => {
-      setIsSmallScreen(getScreenSize());
+    const handleResize = () => {
+      setMobileView(window.innerWidth < 600);
+      
     };
 
-    const interval = setInterval(checkScreenSize, 500); // Check every 500ms
+    window.addEventListener("resize", handleResize);
 
-    return () => clearInterval(interval);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
   }, []);
 
   return (
-    <>
-      <NotificationManager />
-      <div className="container-fluid vh-100">
-        <div className="row h-100">
-          {isSmallScreen ? (
-            !id ? (
-              <div className="col-12 p-0">
-                <Sidebar />
-              </div>
-            ) : (
-              <div className="col-12 p-0">
-                <Conversation key={id} />
-              </div>
-            )
-          ) : (
-            <div className="d-flex w-100 h-100">
-              <div className="col-md-3">
-                <Sidebar />
-              </div>
-              <div className="col-md-9">
-                <Conversation />
-              </div>
+    <div className="container-fluid" style={{fontFamily:"Helvetica, Arial, sans-serif"}}>
+      <div className="row">
+        {mobileView ? (
+          selectedUserName ? (
+            <div className="col-12 border border-secondary vh-100">
+              <Conversation />
             </div>
-          )}
-        </div>
+          ) : (
+            <div className="col-12 border border-secondary vh-100">
+              <Sidebar />
+            </div>
+          )
+        ) : (
+          <>
+            <div className="col-lg-3 col-md-3 border border-secondary vh-100">
+              <Sidebar />
+            </div>
+            <div className="col-lg-9 col-md-9 border border-secondary vh-100">
+              <Conversation />
+            </div>
+          </>
+        )}
       </div>
-    </>
+    </div>
   );
 };
 

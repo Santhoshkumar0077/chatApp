@@ -1,51 +1,58 @@
-
-
-import { useEffect, useState, useRef } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { setMessages, addMessage, setConversationId, resetCurrentConversation } from "../features/conversationSlice";
-import axios from "axios";
-import socket from "../utils/socket";
+import React, { useEffect, useState, useRef } from "react";
 import { IoMdArrowBack } from "react-icons/io";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  useConversationMutation,
+  useMessageUpdationMutation,
+} from "../redux/api/userApi";
+import {
+  resetBack,
+  setConversation,
+  setMessage,
+} from "../redux/slices/userSlice";
+import toast, { Toaster } from "react-hot-toast";
+import { io } from "socket.io-client";
+import notificationSound from "../assets/notification.mp3";
 
-const Conversation = ({ isSmallScreen }) => {
+const Conversation = () => {
+  const selectedUserName = useSelector((state) => state.users.selectedUserName);
+  const loggedUserName = useSelector((state) => state.users.loggedUserName);
+  const id = useSelector((state) => state.users.conversation._id);
+  const currentConversation = useSelector((state) => state.users.conversation);
+  const [content, setContent] = useState("");
   const dispatch = useDispatch();
-  const { loggedUser, selectedUser, messages, id } = useSelector((state) => state.conversation);
-  const [input, setInput] = useState("");
-  const messagesEndRef = useRef(null);
-
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
+  const [conversation, { data, isError, isLoading }] =
+    useConversationMutation();
+  const chatEndRef = useRef(null);
+  const [messageUpdate] = useMessageUpdationMutation();
+  const socket = io("http://localhost:5000");
 
   useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
+    if (Notification.permission !== "granted") {
+      Notification.requestPermission();
+    }
+  }, []);
 
   useEffect(() => {
-    if (!selectedUser) return;
+    if (id) {
+      socket.emit("joinRoom", id);
+    }
 
-    const fetchConversation = async () => {
-      try {
-        const response = await axios.post("http://localhost:5000/api/auth/get-conversation", {
-          loggedUser,
-          selectedUser,
-        });
-
-        dispatch(setMessages(response.data.messages));
-        dispatch(setConversationId(response.data._id));
-        socket.emit("joinRoom", response.data._id);
-      } catch (error) {
-        console.error("Error fetching conversation:", error);
-      }
-    };
-
-    fetchConversation();
-  }, [selectedUser, dispatch, loggedUser]);
-
-  useEffect(() => {
-    const handleReceiveMessage = (message) => {
-      if (message.senderName === selectedUser) {
-        dispatch(addMessage(message));
+    const handleReceiveMessage = ({ message }) => {
+      dispatch(setMessage(message));
+      if (
+        message.senderName !== loggedUserName &&
+        message.senderName !== selectedUserName
+      ) {
+        if (Notification.permission === "granted") {
+          setTimeout(() => {
+            new Notification("From chatApp", {
+              body: `${message.senderName}: ${message.content}`,
+            });
+          }, 500);
+        }
+        const sound = new Audio(notificationSound);
+        sound.play();
       }
     };
 
@@ -54,65 +61,156 @@ const Conversation = ({ isSmallScreen }) => {
     return () => {
       socket.off("receiveMessage", handleReceiveMessage);
     };
-  }, [dispatch, selectedUser]);
+  }, [id, loggedUserName]);
 
-  const sendMessage = async () => {
-    if (!input.trim()) return;
+  useEffect(() => {
+    const fetchConversation = async () => {
+      try {
+        const res = await conversation({
+          loggedUserName,
+          selectedUserName,
+        }).unwrap();
+        if (res.existingConversation) {
+          dispatch(setConversation(res.existingConversation));
+        } else if (res.newConversation) {
+          dispatch(setConversation(res.newConversation));
+        }
+      } catch (error) {
+        console.error("Error fetching conversation:", error);
+      }
+    };
 
-    const newMessage = { senderName: loggedUser, content: input, createdAt: Date.now() };
-
-    if (id) {
-      socket.emit("sendMessage", { id, newMessage });
-      dispatch(addMessage(newMessage));
+    if (selectedUserName) {
+      fetchConversation();
     }
+  }, [selectedUserName, dispatch, loggedUserName]);
 
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [currentConversation]);
+
+  const handleMessageSend = async () => {
     try {
-      await axios.post("http://localhost:5000/api/auth/send-message", {
-        loggedUser,
-        selectedUser,
-        content: input,
-      });
-    } catch (error) {
-      console.error("Error sending message:", error);
-    }
+      if (content.trim() === "") {
+        toast.error("Message is empty");
+        return;
+      }
 
-    setInput("");
+      await messageUpdate({ id, loggedUserName, content }).unwrap();
+
+      socket.emit("sendMessage", {
+        id,
+        message: {
+          content,
+          senderName: loggedUserName,
+          createdAt: Date.now(),
+        },
+      });
+
+      setContent("");
+    } catch (error) {
+      console.error("Error occurred while sending message");
+    }
   };
 
-  const handleClearChat = () => {
-    dispatch(resetCurrentConversation());
+  // Handle back button
+  const handleBack = () => {
+    dispatch(resetBack());
   };
 
   return (
-    <div className={`p-3 ${isSmallScreen ? "w-100" : "col-md-9 bg-light vh-100"}`}>
-      <div className="d-flex align-items-center mb-3">
-        <button onClick={handleClearChat} className="btn btn-link p-0 me-2">
-          <IoMdArrowBack size={30} className="text-danger" />
-        </button>
-        {selectedUser ? <h3 className="mb-0">Chat with {selectedUser}</h3> : <h3 className="mb-0">Select a user</h3>}
+    <div className="d-flex flex-column vh-100">
+      <div className="row p-3 border-bottom border-3 rounded-3 border-dark d-flex align-itmes-center">
+        <IoMdArrowBack
+          className="col-1 fs-2 ps-0"
+          style={{ cursor: "pointer" }}
+          onClick={handleBack}
+        />
+        <h5 className="col-10">Chat to {selectedUserName}</h5>
       </div>
-      <div className="messages bg-white p-3 rounded shadow-sm" style={{ height: "70vh", overflowY: "auto" }}>
-        {messages.length > 0 ? (
-          <ul className="list-unstyled">
-            {messages.map(({ content, senderName }, index) => (
-              <li key={index} className={`mb-2 ${senderName === loggedUser ? "text-end" : "text-start"}`}>
-                <div className={`d-inline-block p-2 rounded ${senderName === loggedUser ? "bg-primary text-white" : "bg-light"}`}>
-                  {content}
-                </div>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p className="text-muted">No conversation yet</p>
+      <div
+        className="flex-grow-1 overflow-auto px-3 py-2 d-flex flex-column gap-2"
+        style={{ height: "70vh" }}
+      >
+        {isLoading && (
+          <div className="d-flex justify-content-center align-items-center vh-100">
+            <div className="spinner-border text-primary" role="status">
+              <span className="visually-hidden">Loading...</span>
+            </div>
+          </div>
         )}
-        <div ref={messagesEndRef} />
+        {isError && (
+          <p className="alert alert-secondary" role="alert">
+            Error loading conversation.
+          </p>
+        )}
+
+        {currentConversation ? (
+          currentConversation?.messages?.length > 0 ? (
+            currentConversation.messages.map((msg, index) => (
+              <div
+                key={index}
+                className={`mb-2 p-2 rounded bg-light shadow d-inline-flex flex-column ${
+                  msg.senderName === loggedUserName
+                    ? "align-self-end bg-dark bg-opacity-75 text-white"
+                    : "align-self-start bg-light text-black"
+                }`}
+                ref={chatEndRef}
+              >
+                <div>{msg.content}</div>
+                <span
+                  className={`text-end small ${
+                    msg.senderName === loggedUserName
+                      ? "text-white"
+                      : "bg-light text-black"
+                  }`}
+                >
+                  {new Date(msg.createdAt).toLocaleTimeString("en-US", {
+                    hour: "numeric",
+                    minute: "numeric",
+                    hour12: true,
+                  })}
+                </span>
+              </div>
+            ))
+          ) : (
+            <p className="alert alert-secondary" role="alert">
+              Select a user to start conversation...
+            </p>
+          )
+        ) : (
+          <p className="alert alert-secondary" role="alert">
+            No conversation yet
+          </p>
+        )}
       </div>
-      {selectedUser && (
-        <div className="mt-3 d-flex">
-          <input type="text" value={input} onChange={(e) => setInput(e.target.value)} className="form-control me-2" placeholder="Type a message..." />
-          <button onClick={sendMessage} className="btn btn-primary">Send</button>
+      <div className="col">
+        <div className="row align-items-center">
+          <div className="col-10">
+            <input
+              type="text"
+              placeholder="Send message..."
+              onChange={(e) => setContent(e.target.value)}
+              value={content}
+              className="form-control"
+            />
+          </div>
+          <div className="col-1">
+            <button
+              onClick={handleMessageSend}
+              className="btn btn-secondary w-auto"
+            >
+              Send
+            </button>
+          </div>
         </div>
-      )}
+      </div>
+      <Toaster
+        position="top-right"
+        reverseOrder={false}
+        pauseOnHover
+        closeOnClick
+      />
     </div>
   );
 };

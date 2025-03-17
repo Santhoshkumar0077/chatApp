@@ -1,19 +1,16 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import Login from "../components/Login";
 import Signup from "../components/Signup";
 
 const Auth = () => {
-  const [authState, setAuthState] = useState("login");
-
+  const [login, setLogin] = useState(true);
   return (
-    <div className="d-flex justify-content-center align-items-center vh-100 bg-light">
-      <div className="card p-4 shadow-lg" style={{ width: "350px" }}>
-        {authState === "login" ? (
-          <Login setAuthState={setAuthState} />
-        ) : (
-          <Signup setAuthState={setAuthState} />
-        )}
-      </div>
+    <div>
+      {login ? (
+        <Login setlogin={setLogin} />
+      ) : (
+        <Signup setlogin={setLogin} />
+      )}
     </div>
   );
 };

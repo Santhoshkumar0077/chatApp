@@ -1,82 +1,95 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setUsers, setError, logoutUser } from "../features/userSlice";
-import Cookies from "js-cookie";
+import { useAllUserQuery } from "../redux/api/userApi";
+import { BiLogOut } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import { setLoggedUser, setSelectedUser, resetConversation } from "../features/conversationSlice";
+import Cookies from "js-cookie";
+import { setSelectedUserName, reset, setAllusers } from "../redux/slices/userSlice";
 
-const Sidebar = ({ isSmallScreen }) => {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const { users } = useSelector((state) => state.users);
+const Sidebar = () => {
+  const loggedUserName = useSelector((state) => state.users.loggedUserName);
+  const allUsers = useSelector((state) => state.users.allUsers);
+  const { data, isLoading, error } = useAllUserQuery();
   const [filteredUsers, setFilteredUsers] = useState([]);
-  const loggedUser = useSelector((state) => state.conversation.loggedUser);
-  const loggedUsername = Cookies.get("loggedusername");
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const response = await axios.get("http://localhost:5000/api/auth/all", {
-          withCredentials: true,
-        });
-        dispatch(setLoggedUser(loggedUsername));
-        dispatch(setUsers(response.data));
-        setFilteredUsers(response.data);
-      } catch (error) {
-        dispatch(setError(error.response?.data || "Unauthorized"));
-        Cookies.remove("token");
-        Cookies.remove("loggedusername");
-        dispatch(logoutUser());
-        navigate("/auth");
-      }
-    };
-
-    fetchUsers();
-  }, [dispatch, navigate, loggedUsername]);
-
-  const handleUserClick = (username) => {
-    dispatch(setSelectedUser(username));
-  };
-
-  const handleSearch = (e) => {
-    const searchValue = e.target.value.toLowerCase();
-    const filtered = users.filter((user) =>
-      user.username.toLowerCase().includes(searchValue)
-    );
-    setFilteredUsers(filtered);
-  };
+    if (!loggedUserName) {
+      navigate("/auth");
+      window.location.reload("/auth");
+      return;
+    }
+    if (data?.users) {
+      dispatch(setAllusers(data.users));
+      setFilteredUsers(data.users); 
+    }
+  }, [data]);
 
   const handleLogout = () => {
     Cookies.remove("token");
-    Cookies.remove("loggedusername");
-    dispatch(resetConversation());
+    dispatch(reset());
     navigate("/auth");
+    window.location.reload("/");
   };
 
+  const handleUserClick = (username) => {
+    dispatch(setSelectedUserName(username));
+  };
+
+  const handleChange = (e) => {
+    const input = e.target.value.toLowerCase();
+    if (input) {
+      setFilteredUsers(allUsers.filter((u) => u.username.toLowerCase().includes(input)));
+    } else {
+      setFilteredUsers(allUsers);
+    }
+  };
+
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error loading users</div>;
+
   return (
-    <div className={`p-3 ${isSmallScreen ? "w-100" : "col-md-3 bg-dark text-white vh-100"}`}>
-      <h3 className="mb-4">Welcome, {loggedUser}</h3>
-      <input
-        type="text"
-        placeholder="Search users..."
-        onChange={handleSearch}
-        className="form-control mb-4"
-      />
-      <ul className="list-unstyled">
-        {filteredUsers.map((user) => (
-          <li
-            key={user._id}
-            onClick={() => handleUserClick(user.username)}
-            className="mb-2 p-2 bg-secondary rounded cursor-pointer"
-          >
-            {user.username}
-          </li>
-        ))}
-      </ul>
-      <button onClick={handleLogout} className="btn btn-danger w-100">
-        Logout
-      </button>
+    <div className="vh-100 d-flex flex-column">
+      <div className="row p-3 border-bottom border-3 rounded-3 border-dark">
+        <h5 className="col-8">Welcome, {loggedUserName}</h5>
+        <BiLogOut
+          size={24}
+          onClick={handleLogout}
+          role="button"
+          className="col-4 fs-3"
+        />
+        <input
+          type="text"
+          className="form-control p-2 mt-3"
+          onChange={handleChange}
+          placeholder="Search users..."
+        />
+      </div>
+      <div className="mt-3 row row-gap-2 fs-5 overflow-auto">
+        {filteredUsers.length > 0 ? (
+          filteredUsers.map((user, index) => (
+            <div
+              key={index}
+              onClick={() => handleUserClick(user.username)}
+              className="col-12 row p-2 border shadow"
+              style={{ cursor: "pointer" }}
+            >
+              <div
+                className="col-2 d-flex align-items-center justify-content-center bg-black text-white rounded-circle"
+                style={{ width: "40px", height: "40px", fontSize: "1.2rem" }}
+              >
+                {user.username[0].toUpperCase()}
+              </div>
+              <div className="col-9 d-flex align-items-center">
+                {user.username}
+              </div>
+            </div>
+          ))
+        ) : (
+          <div>No users found</div>
+        )}
+      </div>
     </div>
   );
 };
