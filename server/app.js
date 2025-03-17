@@ -28,7 +28,14 @@ io.on("connection", (socket) => {
   });
 });
 
-app.use(cors());
+app.use(
+  app.use(
+    cors({
+      origin: "https://chat-app-one-blue.vercel.app",
+      credentials: true,
+    })
+  )
+);
 app.use(cookieParser());
 app.use(express.json());
 app.use("/", router);
