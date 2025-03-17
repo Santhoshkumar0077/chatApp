@@ -21,7 +21,7 @@ const Conversation = () => {
   const currentConversation = useSelector((state) => state.users.conversation);
   const [content, setContent] = useState("");
   const dispatch = useDispatch();
-  const [conversation, { data, isError, isLoading }] =
+  const [conversation, { isError, isLoading }] =
     useConversationMutation();
   const chatEndRef = useRef(null);
   const [messageUpdate] = useMessageUpdationMutation();
