@@ -21,8 +21,7 @@ const Conversation = () => {
   const currentConversation = useSelector((state) => state.users.conversation);
   const [content, setContent] = useState("");
   const dispatch = useDispatch();
-  const [conversation, { isError, isLoading }] =
-    useConversationMutation();
+  const [conversation, { isError, isLoading }] = useConversationMutation();
   const chatEndRef = useRef(null);
   const [messageUpdate] = useMessageUpdationMutation();
   const socket = io("https://chatapp-bf0r.onrender.com");
@@ -44,13 +43,11 @@ const Conversation = () => {
         message.senderName !== loggedUserName &&
         message.senderName !== selectedUserName
       ) {
-        if (Notification.permission === "granted") {
-          setTimeout(() => {
-            new Notification("From chatApp", {
-              body: `${message.senderName}: ${message.content}`,
-            });
-          }, 500);
-        }
+        if (Notification.permission === "granted")
+          new Notification("From chatApp", {
+            body: `${message.senderName}: ${message.content}`,
+          });
+
         const sound = new Audio(notificationSound);
         sound.play();
       }
