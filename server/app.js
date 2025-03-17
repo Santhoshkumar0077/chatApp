@@ -10,10 +10,25 @@ dotenv.config();
 const app = express();
 const server = http.createServer(app);
 
+app.use(
+  cors({
+    origin: "https://chat-app-puce-zeta.vercel.app",
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
+
+app.use(cookieParser());
+app.use(express.json());
+app.use("/", router);
+
 const io = new Server(server, {
   cors: {
-    origin: "https://chat-app-puce-zeta.vercel.app/",
+    origin: "https://chat-app-puce-zeta.vercel.app",
     methods: ["GET", "POST"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
   },
 });
 
@@ -27,19 +42,6 @@ io.on("connection", (socket) => {
     io.to(id).emit("receiveMessage", { message });
   });
 });
-
-app.use(
-  cors({
-    origin: "https://chat-app-puce-zeta.vercel.app/",
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-  })
-);
-
-app.use(cookieParser());
-app.use(express.json());
-app.use("/", router);
 
 mongoose
   .connect(process.env.MONGO_URL)
