@@ -30,7 +30,7 @@ io.on("connection", (socket) => {
 
 app.use(
   cors({
-    origin: "https://chat-app-one-blue.vercel.app",
+    origin: "https://chat-app-three-rouge-80.vercel.app",
     credentials: true,
   })
 );
