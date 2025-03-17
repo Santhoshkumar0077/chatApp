@@ -25,7 +25,7 @@ const Conversation = () => {
     useConversationMutation();
   const chatEndRef = useRef(null);
   const [messageUpdate] = useMessageUpdationMutation();
-  const socket = io("http://localhost:5000");
+  const socket = io("https://chatapp-bf0r.onrender.com");
 
   useEffect(() => {
     if (Notification.permission !== "granted") {
