@@ -146,7 +146,7 @@ const Conversation = () => {
             currentConversation.messages.map((msg, index) => (
               <div
                 key={index}
-                className={`mb-2 p-2 rounded bg-light shadow d-inline-flex flex-column justify-content-end${
+                className={`mb-2 p-2 rounded bg-light shadow d-inline-flex flex-column${
                   msg.senderName === loggedUserName
                     ? "align-self-end bg-dark bg-opacity-75 text-white"
                     : "align-self-start bg-light text-black"
