@@ -8,6 +8,7 @@ import {
   setSelectedUserName,
   reset,
   setAllusers,
+  resetBack,
 } from "../redux/slices/userSlice";
 
 const Sidebar = () => {
@@ -38,6 +39,7 @@ const Sidebar = () => {
   };
 
   const handleUserClick = (username) => {
+    dispatch(resetBack())
     dispatch(setSelectedUserName(username));
   };
 

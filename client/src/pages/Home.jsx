@@ -25,7 +25,7 @@ const Home = () => {
       <div className="row">
         {mobileView ? (
           selectedUserName ? (
-            <div className="col-12 vh-90">
+            <div className="col-12 vh-90 d-flex flex-column vh-100">
               <Conversation />
             </div>
           ) : (
@@ -38,7 +38,7 @@ const Home = () => {
             <div className="col-lg-3 col-md-3 vh-100">
               <Sidebar />
             </div>
-            <div className="col-lg-9 col-md-9 border  vh-100">
+            <div className="col-lg-9 col-md-9 vh-100 d-flex flex-column vh-100">
               <Conversation />
             </div>
           </>

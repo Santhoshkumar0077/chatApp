@@ -115,7 +115,7 @@ const Conversation = () => {
   };
 
   return (
-    <div className="d-flex flex-column vh-100">
+    <>
       <div className="row p-3 border-bottom border-3 rounded-3 border-dark d-flex align-itmes-center">
         <IoMdArrowBack
           className="col-1 fs-4 ps-0"
@@ -204,7 +204,7 @@ const Conversation = () => {
         pauseOnHover
         closeOnClick
       />
-    </div>
+    </>
   );
 };
 
