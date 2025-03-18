@@ -124,7 +124,10 @@ const Conversation = () => {
         />
         <h5 className="col-10 fs-3">Chat to {selectedUserName}</h5>
       </div>
-      <div className="flex-grow-1 overflow-auto px-3 py-2 d-flex flex-column gap-2">
+      <div
+        className="flex-grow-1 overflow-auto px-3 py-2 d-flex flex-column gap-2"
+        style={{ height: "60vh" }}
+      >
         {isLoading && (
           <div className="d-flex justify-content-center align-items-center vh-100">
             <div className="spinner-border text-primary" role="status">
@@ -173,7 +176,17 @@ const Conversation = () => {
           )
         ) : (
           <p className="alert alert-secondary" role="alert">
-            Select a user to start conversation...
+            {isLoading ? (
+              <div className="d-flex justify-content-center align-items-center vh-100">
+                <div className="spinner-border text-primary" role="status">
+                  <span className="visually-hidden">Loading...</span>
+                </div>
+              </div>
+            ) : (
+              <p className="alert alert-secondary" role="alert">
+                Select a user to start conversation...
+              </p>
+            )}
           </p>
         )}
       </div>
