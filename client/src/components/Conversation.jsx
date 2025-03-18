@@ -146,7 +146,7 @@ const Conversation = () => {
             currentConversation.messages.map((msg, index) => (
               <div
                 key={index}
-                className={`mb-2 p-2 rounded bg-light shadow d-inline-flex flex-column ${
+                className={`mb-2 p-2 rounded bg-light shadow d-inline-flex flex-column justify-content-end${
                   msg.senderName === loggedUserName
                     ? "align-self-end bg-dark bg-opacity-75 text-white"
                     : "align-self-start bg-light text-black"
@@ -175,7 +175,7 @@ const Conversation = () => {
             </p>
           )
         ) : (
-          <p className="alert alert-secondary" role="alert">
+          <p>
             {isLoading ? (
               <div className="d-flex justify-content-center align-items-center vh-100">
                 <div className="spinner-border text-primary" role="status">
