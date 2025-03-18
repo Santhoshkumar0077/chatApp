@@ -118,8 +118,8 @@ const Conversation = () => {
     <>
       <div className="row p-3 border-bottom border-3 rounded-3 border-dark d-flex align-itmes-center">
         <IoMdArrowBack
-          className="col-1 fs-4 ps-0"
-          style={{ cursor: "pointer" }}
+          className="col-1  ps-0"
+          style={{ cursor: "pointer", width: "15px" }}
           onClick={handleBack}
         />
         <h5 className="col-10 fs-3">Chat to {selectedUserName}</h5>
@@ -138,7 +138,7 @@ const Conversation = () => {
           </p>
         )}
 
-        {currentConversation ? (
+        {currentConversation.length !== 0 ? (
           currentConversation?.messages?.length > 0 ? (
             currentConversation.messages.map((msg, index) => (
               <div
