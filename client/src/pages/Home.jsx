@@ -25,20 +25,20 @@ const Home = () => {
       <div className="row">
         {mobileView ? (
           selectedUserName ? (
-            <div className="col-12 border border-secondary vh-100">
+            <div className="col-12 vh-90">
               <Conversation />
             </div>
           ) : (
-            <div className="col-12 border border-secondary vh-100">
+            <div className="col-12  vh-90">
               <Sidebar />
             </div>
           )
         ) : (
           <>
-            <div className="col-lg-3 col-md-3 border border-secondary vh-100">
+            <div className="col-lg-3 col-md-3 vh-100">
               <Sidebar />
             </div>
-            <div className="col-lg-9 col-md-9 border border-secondary vh-100">
+            <div className="col-lg-9 col-md-9 border  vh-100">
               <Conversation />
             </div>
           </>

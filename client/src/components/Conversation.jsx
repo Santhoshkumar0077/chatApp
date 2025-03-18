@@ -126,7 +126,7 @@ const Conversation = () => {
       </div>
       <div className="flex-grow-1 overflow-auto px-3 py-2 d-flex flex-column gap-2">
         {isLoading && (
-          <div className="d-flex justify-content-center align-items-center vh-100 justify-content-end">
+          <div className="d-flex justify-content-center align-items-center vh-100">
             <div className="spinner-border text-primary" role="status">
               <span className="visually-hidden">Loading...</span>
             </div>
