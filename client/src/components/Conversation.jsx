@@ -146,11 +146,12 @@ const Conversation = () => {
             currentConversation.messages.map((msg, index) => (
               <div
                 key={index}
-                className={`mb-2 p-2 rounded bg-light shadow d-inline-flex flex-column${
+                className={`mb-2 p-2 rounded bg-light shadow d-inline-flex flex-column ${
                   msg.senderName === loggedUserName
                     ? "align-self-end bg-dark bg-opacity-75 text-white"
                     : "align-self-start bg-light text-black"
                 }`}
+                style={{ width: "maxContent" }}
                 ref={chatEndRef}
               >
                 <div>{msg.content}</div>
@@ -175,18 +176,8 @@ const Conversation = () => {
             </p>
           )
         ) : (
-          <p>
-            {isLoading ? (
-              <div className="d-flex justify-content-center align-items-center vh-100">
-                <div className="spinner-border text-primary" role="status">
-                  <span className="visually-hidden">Loading...</span>
-                </div>
-              </div>
-            ) : (
-              <p className="alert alert-secondary" role="alert">
-                Select a user to start conversation...
-              </p>
-            )}
+          <p className="alert alert-secondary" role="alert">
+            Select a user to start conversation...
           </p>
         )}
       </div>
