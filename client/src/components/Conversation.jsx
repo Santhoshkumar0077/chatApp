@@ -122,7 +122,7 @@ const Conversation = () => {
           style={{ cursor: "pointer" }}
           onClick={handleBack}
         />
-        <h5 className="col-10 fs-3 mx-auto">Chat to {selectedUserName}</h5>
+        <h5 className="col-8 fs-3 mx-auto">Chat to {selectedUserName}</h5>
       </div>
       <div
         className="flex-grow-1 overflow-auto px-3 py-2 d-flex flex-column gap-2"
