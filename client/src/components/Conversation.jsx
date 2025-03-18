@@ -118,11 +118,11 @@ const Conversation = () => {
     <>
       <div className="row p-3 border-bottom border-3 rounded-3 border-dark d-flex align-itmes-center">
         <IoMdArrowBack
-          className="col-1  ps-0"
-          style={{ cursor: "pointer", width: "15px" }}
+          className="col-3 fs-3 ps-0"
+          style={{ cursor: "pointer" }}
           onClick={handleBack}
         />
-        <h5 className="col-10 fs-3">Chat to {selectedUserName}</h5>
+        <h5 className="col-10 fs-3 mx-auto">Chat to {selectedUserName}</h5>
       </div>
       <div
         className="flex-grow-1 overflow-auto px-3 py-2 d-flex flex-column gap-2"
