@@ -116,7 +116,7 @@ const Conversation = () => {
 
   return (
     <>
-      <div className="row p-3 border-bottom border-3 rounded-3 border-dark d-flex align-items-center">
+      <div className="row p-3 border-bottom border-3 rounded-3 border-dark d-flex align-itmes-center">
         <IoMdArrowBack
           className="col-3 fs-3 ps-0"
           style={{ cursor: "pointer" }}
@@ -124,9 +124,8 @@ const Conversation = () => {
         />
         <h5 className="col-8 fs-3 mx-auto">Chat to {selectedUserName}</h5>
       </div>
-
       <div
-        className="flex-grow-1 overflow-auto px-3 py-2 d-flex flex-column-reverse gap-2"
+        className="flex-grow-1 overflow-auto px-3 py-2 d-flex flex-column gap-2"
         style={{ height: "60vh" }}
       >
         {isLoading && (
@@ -136,46 +135,52 @@ const Conversation = () => {
             </div>
           </div>
         )}
-
         {isError && (
           <p className="alert alert-secondary" role="alert">
             Error loading conversation.
           </p>
         )}
 
-        {currentConversation?.messages?.length > 0 ? (
-          currentConversation.messages.map((msg, index) => (
-            <div
-              key={index}
-              className={`mb-2 p-2 rounded bg-light shadow d-inline-flex flex-column ${
-                msg.senderName === loggedUserName
-                  ? "align-self-end bg-dark bg-opacity-75 text-white"
-                  : "align-self-start bg-light text-black"
-              }`}
-              style={{ width: "maxContent" }}
-              ref={index === currentConversation.messages.length - 1 ? chatEndRef : null}
-            >
-              <div>{msg.content}</div>
-              <span
-                className={`text-end small ${
-                  msg.senderName === loggedUserName ? "text-white" : "bg-light text-black"
+        {currentConversation.length !== 0 ? (
+          currentConversation?.messages?.length > 0 ? (
+            currentConversation.messages.map((msg, index) => (
+              <div
+                key={index}
+                className={`mb-2 p-2 rounded bg-light shadow d-inline-flex flex-column ${
+                  msg.senderName === loggedUserName
+                    ? "align-self-end bg-dark bg-opacity-75 text-white"
+                    : "align-self-start bg-light text-black"
                 }`}
+                style={{ width: "maxContent" }}
+                ref={chatEndRef}
               >
-                {new Date(msg.createdAt).toLocaleTimeString("en-US", {
-                  hour: "numeric",
-                  minute: "numeric",
-                  hour12: true,
-                })}
-              </span>
-            </div>
-          ))
+                <div>{msg.content}</div>
+                <span
+                  className={`text-end small ${
+                    msg.senderName === loggedUserName
+                      ? "text-white"
+                      : "bg-light text-black"
+                  }`}
+                >
+                  {new Date(msg.createdAt).toLocaleTimeString("en-US", {
+                    hour: "numeric",
+                    minute: "numeric",
+                    hour12: true,
+                  })}
+                </span>
+              </div>
+            ))
+          ) : (
+            <p className="alert alert-secondary" role="alert">
+              No conversation yet
+            </p>
+          )
         ) : (
           <p className="alert alert-secondary" role="alert">
-            No conversation yet
+            Select to start conversation
           </p>
         )}
       </div>
-
       <div className="col">
         <div className="row align-items-center">
           <div className="col-10">
@@ -197,8 +202,12 @@ const Conversation = () => {
           </div>
         </div>
       </div>
-
-      <Toaster position="top-right" reverseOrder={false} pauseOnHover closeOnClick />
+      <Toaster
+        position="top-right"
+        reverseOrder={false}
+        pauseOnHover
+        closeOnClick
+      />
     </>
   );
 };
