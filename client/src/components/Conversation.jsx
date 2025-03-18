@@ -177,7 +177,11 @@ const Conversation = () => {
           )
         ) : (
           <p className="alert alert-secondary" role="alert">
-            Select a user to start conversation...
+            {isLoading ? (
+              <div disabled></div>
+            ) : (
+              <span>Select a user to start conversation...</span>
+            )}
           </p>
         )}
       </div>
