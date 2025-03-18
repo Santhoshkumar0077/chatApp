@@ -31,6 +31,7 @@ const Signup = ({ setlogin }) => {
       return;
     }
     try {
+      setUsername(username.toLocaleLowerCase())
       await signup({ username, password }).unwrap();
       setUsername("");
       setPassword("");
