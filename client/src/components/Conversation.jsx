@@ -110,7 +110,6 @@ const Conversation = () => {
     }
   };
 
-  // Handle back button
   const handleBack = () => {
     dispatch(resetBack());
   };
@@ -123,14 +122,11 @@ const Conversation = () => {
           style={{ cursor: "pointer" }}
           onClick={handleBack}
         />
-        <h5 className="col-10">Chat to {selectedUserName}</h5>
+        <h5 className="col-10 fs-3">Chat to {selectedUserName}</h5>
       </div>
-      <div
-        className="flex-grow-1 overflow-auto px-3 py-2 d-flex flex-column gap-2"
-        style={{ height: "70vh" }}
-      >
+      <div className="flex-grow-1 overflow-auto px-3 py-2 d-flex flex-column gap-2">
         {isLoading && (
-          <div className="d-flex justify-content-center align-items-center vh-100">
+          <div className="d-flex justify-content-center align-items-center vh-100 justify-content-end">
             <div className="spinner-border text-primary" role="status">
               <span className="visually-hidden">Loading...</span>
             </div>
@@ -172,12 +168,12 @@ const Conversation = () => {
             ))
           ) : (
             <p className="alert alert-secondary" role="alert">
-              Select a user to start conversation...
+              No conversation yet
             </p>
           )
         ) : (
           <p className="alert alert-secondary" role="alert">
-            No conversation yet
+            Select a user to start conversation...
           </p>
         )}
       </div>

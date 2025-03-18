@@ -10,7 +10,7 @@ const Login = ({ setlogin }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const Navigate = useNavigate();
-  const dispatch = useDispatch(); 
+  const dispatch = useDispatch();
   const [loginuser, { data, isError, isLoading }] = useLoginUserMutation();
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -70,7 +70,11 @@ const Login = ({ setlogin }) => {
             Don't have an account?
           </Link>
         </div>
-        <button type="submit" className="btn btn-primary w-100 mt-3">
+        <button
+          disabled={isLoading}
+          type="submit"
+          className="btn btn-primary w-100 mt-3"
+        >
           {isLoading ? "Logging in..." : "Login"}
         </button>
         {isError && (

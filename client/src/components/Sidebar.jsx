@@ -4,7 +4,11 @@ import { useAllUserQuery } from "../redux/api/userApi";
 import { BiLogOut } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
-import { setSelectedUserName, reset, setAllusers } from "../redux/slices/userSlice";
+import {
+  setSelectedUserName,
+  reset,
+  setAllusers,
+} from "../redux/slices/userSlice";
 
 const Sidebar = () => {
   const loggedUserName = useSelector((state) => state.users.loggedUserName);
@@ -22,7 +26,7 @@ const Sidebar = () => {
     }
     if (data?.users) {
       dispatch(setAllusers(data.users));
-      setFilteredUsers(data.users); 
+      setFilteredUsers(data.users);
     }
   }, [data]);
 
@@ -40,14 +44,28 @@ const Sidebar = () => {
   const handleChange = (e) => {
     const input = e.target.value.toLowerCase();
     if (input) {
-      setFilteredUsers(allUsers.filter((u) => u.username.toLowerCase().includes(input)));
+      setFilteredUsers(
+        allUsers.filter((u) => u.username.toLowerCase().includes(input))
+      );
     } else {
       setFilteredUsers(allUsers);
     }
   };
 
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error loading users</div>;
+  if (isLoading)
+    return (
+      <div className="d-flex justify-content-center align-items-center vh-100">
+        <div className="spinner-border text-primary" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    );
+  if (error)
+    return (
+      <div className="alert alert-danger" role="alert">
+        Error loading users
+      </div>
+    );
 
   return (
     <div className="vh-100 d-flex flex-column">
