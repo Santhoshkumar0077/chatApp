@@ -209,6 +209,7 @@ const Home = () => {
                     className={`conversation-middle-list ${
                       msg.senderName === loggedUserName ? "send" : "receive"
                     }`}
+                    ref={chatEndRef}
                   >
                     {msg.content}
                   </div>

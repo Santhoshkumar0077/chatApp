@@ -76,7 +76,7 @@
   background-color: wheat;
   max-width: 70%;
   border-radius: 5px;
-  box-shadow: 10px 10px 5px gray;
+  box-shadow: 5px 5px 5px gray;
   display: flex;
   flex-direction: column;
 }
