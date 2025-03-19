@@ -11,11 +11,13 @@ const Signup = ({ setlogin }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const lowerCase = username.toLowerCase();
     const containSpecialCharacter = (password) => {
       const specialChars = /[!@#$%^&*(),.:{}|<>]/;
       return specialChars.test(password);
     };
-    if (username.length <= 4) {
+    if (lowerCase.length <= 4) {
       setError("Enter at least 5 characters for username");
       toast.error("Enter at least 5 characters for username");
       return;
@@ -31,7 +33,6 @@ const Signup = ({ setlogin }) => {
       return;
     }
     try {
-      const lowerCase = username.toLocaleLowerCase();
       await signup({ lowerCase, password }).unwrap();
       setUsername("");
       setPassword("");

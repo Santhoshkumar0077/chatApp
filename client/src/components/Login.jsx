@@ -14,12 +14,13 @@ const Login = ({ setlogin }) => {
   const [loginuser, { data, isError, isLoading }] = useLoginUserMutation();
   const handleLogin = async (e) => {
     e.preventDefault();
-    if (!username || !password) {
+
+    const lowerCase = username.toLowerCase()
+    if (!lowerCase || !password) {
       toast.error("All fields required");
       return;
     }
     try {
-      const lowerCase = username.toLocaleLowerCase()
       const res = await loginuser({ lowerCase, password }).unwrap();
       setUsername("");
       setPassword("");
@@ -29,7 +30,7 @@ const Login = ({ setlogin }) => {
       setTimeout(() => {
         Navigate("/");
       }, 500);
-    } catch (error) {}
+    } catch (error) { }
   };
   return (
     <div
