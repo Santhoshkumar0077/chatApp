@@ -76,6 +76,12 @@
   max-width: 70%;
   border-radius: 5px;
   box-shadow: 10px 10px 5px gray;
+  display: flex;
+  flex-direction: column;
+}
+.conversation-middle-list-time {
+  align-self: end;
+  justify-self: end;
 }
 .send {
   align-self: end;
