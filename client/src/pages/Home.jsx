@@ -299,9 +299,10 @@ const Home = () => {
                   className={`conversation-middle-list ${
                     msg.senderName === loggedUserName ? "send" : "receive"
                   }`}
+                  ref={chatEndRef}
                 >
                   {msg.content}
-                  <span className={`text-end small`}>
+                  <span className={`conversation-middle-list-time`}>
                     {new Date(msg.createdAt).toLocaleTimeString("en-US", {
                       hour: "numeric",
                       minute: "numeric",
@@ -310,7 +311,6 @@ const Home = () => {
                   </span>
                 </div>
               ))}
-              <div ref={chatEndRef} />
             </div>
             <div className="conversation-bottom">
               <input

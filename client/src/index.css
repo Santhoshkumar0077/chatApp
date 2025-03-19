@@ -69,6 +69,7 @@
   flex-direction: column;
   row-gap: 20px;
   overflow-y: auto;
+  padding: 5px;
 }
 .conversation-middle-list {
   padding: 10px;
