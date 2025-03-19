@@ -21,7 +21,7 @@ const Login = ({ setlogin }) => {
       return;
     }
     try {
-      const res = await loginuser({ lowerCase, password }).unwrap();
+      const res = await loginuser({ username: lowerCase, password }).unwrap();
       setUsername("");
       setPassword("");
       toast.success("Login succesful!");

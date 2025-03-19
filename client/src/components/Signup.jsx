@@ -33,7 +33,7 @@ const Signup = ({ setlogin }) => {
       return;
     }
     try {
-      await signup({ lowerCase, password }).unwrap();
+      await signup({ username: lowerCase, password }).unwrap();
       setUsername("");
       setPassword("");
       setError("");
