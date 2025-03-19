@@ -137,7 +137,7 @@ const Conversation = () => {
         )}
         {isError && (
           <p className="alert alert-secondary" role="alert">
-            Error loading conversation.
+            Error loading conversation. 
           </p>
         )}
 

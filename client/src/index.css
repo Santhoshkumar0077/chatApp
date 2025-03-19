@@ -1,0 +1,105 @@
+* {
+    padding: 0%;
+    margin: 0%;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+  .home-container {
+    width: 100vw;
+    height: 100vh;
+    background-color: lightblue;
+    display: grid;
+    grid-template-columns: 1fr 4fr;
+  }
+  .sidebar-container {
+    height: 100vh;
+    width: 100%;
+    display: grid;
+    grid-template: row;
+    grid-template-rows: 1fr 4fr;
+  }
+  .conversation-container {
+    height: 100vh;
+    width: 100%;
+    display: grid;
+    grid-template: row;
+    grid-template-rows: 1fr 3fr 1fr;
+  }
+  .sidebar-top {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    row-gap: 10px;
+  }
+  
+  .sidebar-top-heading {
+    font-size: 1.2rem;
+  }
+  .sidebar-top-input {
+    padding: 10px;
+    border-radius: 5px;
+  }
+  .sidebar-bottom {
+    display: flex;
+    flex-direction: column;
+    row-gap: 20px;
+    overflow-y: auto;
+  }
+  .sidebar-bottom-list {
+    border: 1px solid black;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: rgb(0, 0, 0);
+    color: white;
+    cursor: pointer;
+    box-shadow: 2px 2px 5px gray;
+  }
+  .conversation-top {
+    display: grid;
+    grid-template-columns: 1fr 5fr;
+    align-items: center;
+  }
+  .conversation-top-arrow {
+    justify-self: center;
+    font-size: 2rem;
+  }
+  .conversation-middle {
+    display: flex;
+    flex-direction: column;
+    row-gap: 20px;
+    overflow-y: auto;
+  }
+  .conversation-middle-list {
+    padding: 10px;
+    background-color: wheat;
+    max-width: 70%;
+    border-radius: 5px;
+    box-shadow: 10px 10px 5px gray;
+  }
+  .send {
+    align-self: end;
+    background-color: aqua;
+  }
+  .receive {
+    align-self: start;
+  }
+  .conversation-bottom {
+    display: flex;
+    justify-content: space-evenly;
+  }
+  .conversation-bottom-input {
+    width: 60%;
+    align-self: center;
+    justify-self: center;
+    padding: 10px;
+    border-radius: 5px;
+  }
+  .conversation-bottom-button {
+    width: 10%;
+    align-self: center;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
