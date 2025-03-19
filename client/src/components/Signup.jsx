@@ -7,7 +7,7 @@ const Signup = ({ setlogin }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [signup, {data,isError,isLoading}] = useSignupUserMutation();
+  const [signup, { data, isError, isLoading }] = useSignupUserMutation();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -31,14 +31,14 @@ const Signup = ({ setlogin }) => {
       return;
     }
     try {
-      setUsername(username.toLocaleLowerCase())
-      await signup({ username, password }).unwrap();
+      const lowerCase = username.toLocaleLowerCase();
+      await signup({ lowerCase, password }).unwrap();
       setUsername("");
       setPassword("");
       setError("");
       toast.success("User registered successfully!");
       setTimeout(() => {
-        setlogin(true)
+        setlogin(true);
       }, 2000);
     } catch (err) {
       toast.error("Signup Failed");
@@ -88,11 +88,11 @@ const Signup = ({ setlogin }) => {
         </button>
         {data && <div className="mt-3 text-success">{data.message}</div>}
         {isError && <div className="mt-3 text-danger">Signup failed</div>}
-      </form>   
+      </form>
       <Toaster
         position="top-right"
         reverseOrder={false}
-        pauseOnHover 
+        pauseOnHover
         closeOnClick
       />
     </div>
