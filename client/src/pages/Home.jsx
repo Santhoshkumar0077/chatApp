@@ -206,9 +206,8 @@ const Home = () => {
                 {currentConversation?.messages?.map((msg, index) => (
                   <div
                     key={index}
-                    className={`conversation-middle-list ${
-                      msg.senderName === loggedUserName ? "send" : "receive"
-                    }`}
+                    className={`conversation-middle-list ${msg.senderName === loggedUserName ? "send" : "receive"
+                      }`}
                     ref={chatEndRef}
                   >
                     {msg.content}
@@ -255,6 +254,9 @@ const Home = () => {
                   </div>
                 ))}
               </div>
+              <div className="sidebar-bottom-logout">
+                <BiLogOut onClick={handleLogout} />
+              </div>
             </div>
           )}
         </div>
@@ -281,6 +283,9 @@ const Home = () => {
                 </div>
               ))}
             </div>
+            <div className="sidebar-bottom-logout">
+              <BiLogOut onClick={handleLogout} />
+            </div>
           </div>
           <div className="conversation-container">
             <div className="conversation-top">
@@ -297,9 +302,8 @@ const Home = () => {
               {currentConversation?.messages?.map((msg, index) => (
                 <div
                   key={index}
-                  className={`conversation-middle-list ${
-                    msg.senderName === loggedUserName ? "send" : "receive"
-                  }`}
+                  className={`conversation-middle-list ${msg.senderName === loggedUserName ? "send" : "receive"
+                    }`}
                   ref={chatEndRef}
                 >
                   {msg.content}
