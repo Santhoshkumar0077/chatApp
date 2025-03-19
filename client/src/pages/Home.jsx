@@ -125,6 +125,7 @@ const Home = () => {
     dispatch(reset());
     navigate("/auth");
     window.location.reload("/");
+    toast.success("Logout success")
   };
 
   const handleUserClick = (username) => {
@@ -284,7 +285,7 @@ const Home = () => {
               ))}
             </div>
             <div className="sidebar-bottom-logout">
-              <BiLogOut onClick={handleLogout} />
+              <BiLogOut onClick={handleLogout} style={{ cursor: "pointer" }} />
             </div>
           </div>
           <div className="conversation-container">
