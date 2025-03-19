@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useAllUserQuery } from "../redux/api/userApi";
 import { BiLogOut } from "react-icons/bi";
@@ -41,6 +41,7 @@ const Home = () => {
   ] = useConversationMutation();
   const [messageUpdate] = useMessageUpdationMutation();
   const socket = io("https://chatapp-bf0r.onrender.com");
+  const chatEndRef = useRef(null);
 
   useEffect(() => {
     const handleResize = () => setMobileView(window.innerWidth < 600);
@@ -115,6 +116,9 @@ const Home = () => {
       fetchConversation();
     }
   }, [selectedUserName, dispatch, loggedUserName]);
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [currentConversation.messages]);
 
   const handleLogout = () => {
     Cookies.remove("token");
@@ -297,8 +301,16 @@ const Home = () => {
                   }`}
                 >
                   {msg.content}
+                  <span className={`text-end small`}>
+                    {new Date(msg.createdAt).toLocaleTimeString("en-US", {
+                      hour: "numeric",
+                      minute: "numeric",
+                      hour12: true,
+                    })}
+                  </span>
                 </div>
               ))}
+              <div ref={chatEndRef} />
             </div>
             <div className="conversation-bottom">
               <input
