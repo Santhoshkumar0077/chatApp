@@ -212,6 +212,13 @@ const Home = () => {
                     ref={chatEndRef}
                   >
                     {msg.content}
+                    <span className={`conversation-middle-list-time`}>
+                      {new Date(msg.createdAt).toLocaleTimeString("en-US", {
+                        hour: "numeric",
+                        minute: "numeric",
+                        hour12: true,
+                      })}
+                    </span>
                   </div>
                 ))}
               </div>
